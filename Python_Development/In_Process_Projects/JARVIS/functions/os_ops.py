@@ -2,10 +2,11 @@ import os
 import subprocess as sp
 
 paths = {
-    'notepad': "C:\\Program Files\\Notepad++\\notepad++.exe",
-    'discord': "C:\\Users\\ashut\\AppData\\Local\\Discord\\app-1.0.9003\\Discord.exe",
-    'calculator': "C:\\Windows\\System32\\calc.exe"
-}
+    'notepad': "C:\\Program Files\\Notepad++\\notepad++.exe", 
+    'discord': "C:\\Users\\ashut\\AppData\\Local\\Discord\\app-1.0.9003\\Discord.exe", 
+    'calculator': "C:\\Windows\\System32\\calc.exe", 
+    'vs_code': "C:\\Users\\TroyPetrowicz\\AppData\\Local\\Programs\\Microsoft VS Code\\Code.exe"
+    }
 
 
 def open_camera():
@@ -24,3 +25,6 @@ def open_cmd():
 
 def open_calculator():
     sp.Popen(paths['calculator'])
+
+def open_vs_code():
+    os.startfile(paths['vs_code'])

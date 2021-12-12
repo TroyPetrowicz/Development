@@ -9,5 +9,6 @@ opening_text = [
     "No doubt, a brilliant choice sir",
     "Hang on, just give me a second",
     "You make things too easy on me sir",
-    "What would you do without me sir?"
+    "What would you do without me sir?",
+    "At your disposal sir"
 ]
