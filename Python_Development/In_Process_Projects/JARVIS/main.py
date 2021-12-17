@@ -8,6 +8,7 @@ from decouple import config
 import speech_recognition as sr
 from random import choice
 from utils import opening_text
+import time
 
 
 USERNAME = config('USER')
@@ -23,7 +24,7 @@ engine.setProperty('volume', 1.0)
 
 # Set Voice (Female)
 voices = engine.getProperty('voices')
-engine.setProperty('voice', voices[1].id)
+engine.setProperty('voice', voices[0].id)
 
 
 
@@ -54,7 +55,7 @@ def take_user_input():
     r = sr.Recognizer()
     with sr.Microphone() as source:
         print('Listening....')
-        r.pause_threshold = 2
+        r.pause_threshold = 1
         audio = r.listen(source)
 
     try:
@@ -79,6 +80,7 @@ if __name__ == '__main__':
     greet_user()
     while True:
         query = take_user_input().lower()
+        
 
         if 'open notepad' in query:
             open_notepad()

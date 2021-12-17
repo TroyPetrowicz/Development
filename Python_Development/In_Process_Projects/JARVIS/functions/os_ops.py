@@ -2,10 +2,10 @@ import os
 import subprocess as sp
 
 paths = {
-    'notepad': "C:\\Program Files\\Notepad++\\notepad++.exe", 
+    'notepad': "notepad++.exe", 
     'discord': "C:\\Users\\ashut\\AppData\\Local\\Discord\\app-1.0.9003\\Discord.exe", 
     'calculator': "C:\\Windows\\System32\\calc.exe", 
-    'vs_code': "C:\\Users\\TroyPetrowicz\\AppData\\Local\\Programs\\Microsoft VS Code\\Code.exe"
+    'vs_code': "C:\\Users\\troyp\\AppData\\Local\\Programs\\Microsoft VS Code\\Code.exe"
     }
 
 
