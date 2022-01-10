@@ -26,7 +26,9 @@ def display_text(event=None):
       userinput2 = float(entry2.get())
 
    if userinput3 == "":
-      userinput3 = .0000000001
+      userinput3 = .000000001
+   elif userinput3 == "0":
+      userinput3 = .000000001
    else:
       userinput3 = float(entry3.get())
 
