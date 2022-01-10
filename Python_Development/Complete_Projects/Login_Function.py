@@ -64,8 +64,10 @@ class Signin:
         global password1
         global username1
         
-        username1 = str(username.get())
-        password1 = str(password.get())
+        username1 = username.get()
+        password1 = password.get()
+        password1 = str(password1)
+        username1 = str(username1)
         
         if username1 == "":
             username1 = "Username"
