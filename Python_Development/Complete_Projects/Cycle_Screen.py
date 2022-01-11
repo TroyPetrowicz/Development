@@ -26,7 +26,6 @@ class App():
 
         #Create an Entry widget to accept User Input
         entry2 = Entry(self.root, width=30)
-        entry2.focus_set()
         entry2.pack()
 
         self.root.bind("<Return>", self.run)
