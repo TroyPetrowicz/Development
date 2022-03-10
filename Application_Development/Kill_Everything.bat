@@ -1,0 +1,1 @@
+taskkill /FI "USERNAME eq troyp" /FI "IMAGENAME ne explorer.exe" /FI "IMAGENAME ne dwm.exe"
