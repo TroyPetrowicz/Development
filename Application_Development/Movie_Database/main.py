@@ -12,7 +12,7 @@ def db_conn(db_file):
     try:
         db_conn = sqlite3.connect(db_file)
     except Error as e:
-        print(e)
+        print("Cannot connect to database")
 
     return db_conn
 
