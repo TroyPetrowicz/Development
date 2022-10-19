@@ -1,0 +1,220 @@
+@echo off
+:: ++
+:: <-----------------------------------------------------------------
+:CHOICE
+CLS
+ECHO Select NX Series to start:
+ECHO.
+ECHO        1.  NX10
+ECHO        2.  NX11
+ECHO        3.  NX12
+ECHO        4.  NX1847
+ECHO        5.  NX1872
+ECHO        6.  NX1899
+ECHO        7.  NX1926
+ECHO        8.  NX1953
+:: ECHO        9.  NX1953
+ECHO.
+CHOICE /C 12345678 /M "Enter your choice:"
+
+:: Note - list ERRORLEVELS in decreasing order
+
+IF ERRORLEVEL 8 (
+  set NX_NUMBER=NX1953
+  set NX_VERSION=V1953
+  GOTO ECHOICE )
+IF ERRORLEVEL 7 (
+  set NX_NUMBER=NX1926
+  set NX_VERSION=V1926
+  GOTO ECHOICE )
+IF ERRORLEVEL 6 (
+  set NX_NUMBER=NX1899
+  set NX_VERSION=V1899
+  GOTO ECHOICE )
+IF ERRORLEVEL 5 (
+  set NX_NUMBER=NX1872
+  set NX_VERSION=V32.0
+  GOTO ECHOICE )
+IF ERRORLEVEL 4 (
+  set NX_NUMBER=NX1847
+  set NX_VERSION=V31.0
+  GOTO ECHOICE )
+IF ERRORLEVEL 3 (
+  set NX_NUMBER=NX120
+  set NX_VERSION=V30.0
+  GOTO ECHOICE )
+IF ERRORLEVEL 2 (
+  set NX_NUMBER=NX110
+  set NX_VERSION=V29.0
+  GOTO ECHOICE )
+IF ERRORLEVEL 1 (
+  set NX_NUMBER=NX100
+  set NX_VERSION=V28.0
+  GOTO ECHOICE )
+  GOTO CHOICE
+GOTO CHOICE
+:ECHOICE
+:: --------------------------------
+ECHO.
+ECHO        1.  Development
+ECHO        2.  NX_NUMBER
+ECHO        3.  Production
+ECHO.
+CHOICE /C 123 /M "Enter your choice:"
+
+IF ERRORLEVEL 3 (
+  set SCOPE=Production
+  GOTO FCHOICE )
+IF ERRORLEVEL 2 (
+  set SCOPE=%NX_NUMBER%
+  GOTO FCHOICE )
+IF ERRORLEVEL 1 (
+  set SCOPE=Development
+  GOTO FCHOICE )
+GOTO ECHOICE
+:FCHOICE
+:: ----------------------------------------------------------------->
+:: --
+
+:: ++
+:: <-----------------------------------------------------------------
+:: Do not edit this section
+:: get NX install location
+set rk=hklm\software\Unigraphics Solutions\Installed Applications
+if /i "%PROCESSOR_ARCHITECTURE%"=="AMD64" set rk=hklm\software\wow6432node\Unigraphics Solutions\Installed Applications
+if /i "%PROCESSOR_ARCHITEW6432%"=="AMD64" set rk=hklm\software\wow6432node\Unigraphics Solutions\Installed Applications
+for /f "tokens=3,* usebackq" %%h in (`reg query "%rk%" /v "Unigraphics %NX_VERSION%" ^| findstr /i %NX_VERSION%` ) do (set str1=%%~dpi) 
+set UGII_BASE_DIR=%str1:\nxbin\=%
+set str1=%UGII_BASE_DIR%
+set UGII_BASE_DIR=%str1:\ugii\=%
+set str1=
+:: ----------------------------------------------------------------->
+:: --
+
+:: ++
+:: <-----------------------------------------------------------------
+:: Set licence server and bundle if needed
+:: set UGS_LICENSE_BUNDLE=
+:: set SPLM_LICENSE_SERVER=
+:: ----------------------------------------------------------------->
+:: --
+
+:: ++
+:: <-----------------------------------------------------------------
+:: Cleanup old error files on new start
+DEL /Q "%CD%\*.out"
+DEL /Q "%CD%\*.log"
+DEL /Q "%CD%\*.ptp"
+
+:: ----------------------------------------------------------------->
+:: --
+
+:: ++
+:: <-----------------------------------------------------------------
+setlocal
+:set_display
+if "%DISPLAY%" == "" set DISPLAY=LOCALPC:0.0
+echo ************************************************************
+:: Sandbox Paths are to be use to point to earlier version of software for previous configurations
+set SANDBOX=%CD%\~SANDBOX\
+set UGII_BITMAP_PATH=%SANDBOX%UGII_BITMAP_PATH\%NX_NUMBER%\
+set UGII_CAM_CUSTOM_DIR=%SANDBOX%UGII_CAM_CUSTOM_DIR\
+set UGII_CAM_LIBRARY_DEVICE_DIR=%SANDBOX%UGII_CAM_LIBRARY_DEVICE_DIR\%NX_NUMBER%\
+set UGII_CAM_LIBRARY_FEEDS_SPEEDS_DIR=%SANDBOX%UGII_CAM_LIBRARY_FEEDS_SPEEDS_DIR\%NX_NUMBER%\
+set UGII_CAM_LIBRARY_MACHINE_DATA_DIR=%SANDBOX%UGII_CAM_LIBRARY_MACHINE_DATA_DIR\%SCOPE%\ascii\
+set UGII_CAM_LIBRARY_TOOL_DIR=%SANDBOX%UGII_CAM_LIBRARY_TOOL_DIR\%NX_NUMBER%\
+set UGII_USER_DIR=%SANDBOX%UGII_USER_DIR\%NX_NUMBER%\%USERNAME%\
+set UGII_USER_PROFILE_DIR=%SANDBOX%UGII_USER_PROFILE_DIR\%NX_NUMBER%\%USERNAME%\
+set UGII_ENV_FILE=%UGII_USER_DIR%SANDBOX_%NX_NUMBER%_ugii_env.dat
+
+:: The following 2 Variables have been added to test pre-setting configuration
+set UGII_CAM_CONFIG_DIR=%UGII_BASE_DIR%\mach\resource\configuration\
+set UGII_CAM_CONFIG=%UGII_CAM_CONFIG_DIR%cam_general.dat
+
+echo ************************************************************
+CLS
+set NX_NUMBER
+set NX_VERSION
+set SANDBOX
+echo ***
+set SCOPE
+echo ***
+set UGII_BASE_DIR
+set UGII_BITMAP_PATH
+set UGII_CAM_CUSTOM_DIR
+set UGII_CAM_LIBRARY_DEVICE_DIR
+set UGII_CAM_LIBRARY_FEEDS_SPEEDS_DIR
+set UGII_CAM_LIBRARY_MACHINE_DATA_DIR
+set UGII_CAM_LIBRARY_TOOL_DIR
+set UGII_USER_DIR
+set UGII_USER_PROFILE_DIR
+set UGII_ENV_FILE
+set UGII_CAM_CONFIG_DIR
+set UGII_CAM_CONFIG
+echo.
+:: ---------------------------------------------------------------- CREATE DIRECTORIES
+if not exist "%SANDBOX%*"                           md "%SANDBOX%"
+if not exist "%UGII_BITMAP_PATH%*"                  md "%UGII_BITMAP_PATH%"
+if not exist "%UGII_CAM_CUSTOM_DIR%*"               md "%UGII_CAM_CUSTOM_DIR%"
+if not exist "%UGII_CAM_LIBRARY_DEVICE_DIR%*"       md "%UGII_CAM_LIBRARY_DEVICE_DIR%" 
+if not exist "%UGII_CAM_LIBRARY_FEEDS_SPEEDS_DIR%*" md "%UGII_CAM_LIBRARY_FEEDS_SPEEDS_DIR%" 
+if not exist "%UGII_CAM_LIBRARY_MACHINE_DATA_DIR%*" md "%UGII_CAM_LIBRARY_MACHINE_DATA_DIR%" 
+if not exist "%UGII_CAM_LIBRARY_TOOL_DIR%*"         md "%UGII_CAM_LIBRARY_TOOL_DIR%"
+if not exist "%UGII_USER_DIR%*"                     md "%UGII_USER_DIR%startup"
+if not exist "%UGII_USER_PROFILE_DIR%*"             md "%UGII_USER_PROFILE_DIR%"
+
+DEL /Q "%UGII_ENV_FILE%"
+
+if not exist "%UGII_ENV_FILE%" (
+  echo #                                                                               >>"%UGII_ENV_FILE%"
+  echo #     Copyright 1991 - 2013 Siemens Product Lifecycle Management Software Inc.  >>"%UGII_ENV_FILE%"
+  echo #                                   All Rights Reserved.                        >>"%UGII_ENV_FILE%"
+  echo #                                                                               >>"%UGII_ENV_FILE%"
+  echo ############################################################################### >>"%UGII_ENV_FILE%"
+  echo #                                                                               >>"%UGII_ENV_FILE%"
+  echo #                                                                               >>"%UGII_ENV_FILE%"
+  echo # This file should be used to override any standard NX environment variables.   >>"%UGII_ENV_FILE%"
+  echo # The values defined here will take precedence over the NX values. This file    >>"%UGII_ENV_FILE%"
+  echo # will not be overwritten by an MR installation.                                >>"%UGII_ENV_FILE%"
+  echo #                                                                               >>"%UGII_ENV_FILE%"
+  echo # Override any variables here.                                                  >>"%UGII_ENV_FILE%"
+  echo UGII_ENV_FILE="%UGII_ENV_FILE%"                                                 >>"%UGII_ENV_FILE%"
+  echo #                                                                               >>"%UGII_ENV_FILE%"
+)
+
+set filename=edit_ug_main.men
+set ug_main=%UGII_USER_DIR%startup\%filename%
+set version=110
+if %NX_NUMBER%==NX120   set VERSION=139
+if %NX_NUMBER%==NX1926  set VERSION=139
+if %NX_NUMBER%==NX1953  set VERSION=139
+
+if not exist "%ug_main%" ( 
+  echo.>>"%ug_main%"
+  echo VERSION %VERSION%>>"%ug_main%"
+  echo.>>"%ug_main%">>"%ug_main%"
+  echo EDIT UG_GATEWAY_MAIN_MENUBAR>>"%ug_main%"
+  echo.>>"%ug_main%"
+  echo TITLE %NX_NUMBER% Native Sandbox>>"%ug_main%"
+  echo.>>"%ug_main%"
+)
+echo ************************************************************
+echo start "CSE TRAINING" "%UGII_BASE_DIR%\NXBIN\ugraf.exe" -NX %*
+echo or
+echo start "CSE TRAINING" "%UGII_BASE_DIR%\UGII\ugraf.exe" -NX %*
+echo ************************************************************
+:: start "CSE TRAINING" "%UGII_BASE_DIR%\NXBIN\ugraf.exe" -NX %*
+start "CSE TRAINING" "%UGII_BASE_DIR%\UGII\ugraf.exe" -NX %*
+
+:: ----------------------------------------------------------------->
+:: --
+if ERRORLEVEL 1 goto error_exit
+goto normal_exit
+:error_exit
+ECHO.
+ECHO ....................... UNABLE TO START NX AS EXPECTED
+ECHO.
+@pause
+:normal_exit
+endlocal
+:: @echo on
