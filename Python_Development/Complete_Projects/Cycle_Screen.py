@@ -9,8 +9,9 @@ class App():
         global entry1
         global entry2
         self.root = tkinter.Tk()
+        self.root.title("Auto Cycle Screen")
         self.root.geometry("300x200")
-        
+
         #Initialize a Label to display the User Input
         label2 = Label(self.root, text="Hours to Run", font=("Courier 12 bold"))
         label2.pack()
