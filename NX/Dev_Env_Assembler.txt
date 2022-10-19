@@ -1,0 +1,205 @@
+REM
+REM CHANGELOG
+REM 2020/08/05|gkuchyt|Add NX 1926
+REM 2020/08/06|ebondarev| Change lline: PLEASE, EXIT THE DROPBOX DESKTOP APPLICATION
+REM 2020/08/05|gkuchyt|Add NX 1953
+REM 2021/06/17|ebondarev|Change to ".sys_DevEnvKit"
+REM 2021/06/23|ebondarev|Add NX 1980
+REM
+
+@echo off
+title Development Environment Assembler
+setlocal
+
+echo **********************************************************************************
+echo *                                                                                *
+echo    XXXXXX    XXXXXX  XXXXXX         XX      XX       XXXXXX  XXXXXX   XXXXXXXXXX
+echo    XX   XX   XX      XX   XX       XXXX     XX       XX      XX   XX  XX  XX  XX
+echo    XXXXXX    XXXX    XX    XX     XX  XX    XX       XXXX    XXXXXX       XX
+echo    XX   XX   XX      XX   XX     XXXXXXXX   XX   XX  XX      XX   XX      XX
+echo   XXX    XX  XXXXXX  XXXXXX     XXX     XX  XXXXXXX  XXXXXX  XX    XX     XXX
+echo *                                                                                *
+echo **********************************************************************************
+echo ***!!! PLEASE, EXIT THE DROPBOX DESKTOP APPLICATION !!!***
+echo It is strongly recommended don't use exclamation sign "!" in the names
+
+echo Please, enter NX version
+:type_again
+echo Available options are:
+echo -------------
+REM echo 100
+echo 1 - 110
+echo 2 - 120
+echo 3 - 1847
+echo 4 - 1872
+echo 5 - 1899
+echo 6 - 1926
+echo 7 - 1953
+echo 8 - 1980
+echo --------------
+set /p nx_input=
+
+REM if %nx_input% == 100    set NX_VERSION=V28.0
+if %nx_input% == 1 (
+	set NX_VERSION=V29.0
+	set nx_number=110
+	goto start_1
+)
+if %nx_input% == 2 (
+	set NX_VERSION=V30.0
+	set nx_number=120
+	goto start_1
+)
+if %nx_input% == 3 (
+	set NX_VERSION=V31.0
+	set nx_number=1847
+	goto start_1
+)
+if %nx_input% == 4 (
+	set NX_VERSION=V32.0
+	set nx_number=1872
+	goto start_1
+)
+if %nx_input% == 5 (
+	set NX_VERSION=V1899
+	set nx_number=1899
+	goto start_1
+)
+if %nx_input% == 6 (
+	set NX_VERSION=V1926
+	set nx_number=1926
+	goto start_1
+)
+if %nx_input% == 7 (
+	set NX_VERSION=V1953
+	set nx_number=1953
+	goto start_1
+)
+if %nx_input% == 8 (
+	set NX_VERSION=V1980
+	set nx_number=1980
+	goto start_1
+)
+echo Input "%nx_input%" is incorrect, please, try again
+goto type_again
+
+:start_1
+
+echo Please, enter Environment Kit name
+set /p dev_env_name=
+
+echo Press S to start assemble the Development Environment
+echo Press Q to quit
+set /p start_or_quit=
+if %start_or_quit% == s goto start_assemble
+if %start_or_quit% == S goto start_assemble
+if %start_or_quit% == q goto quit
+if %start_or_quit% == Q goto quit
+if not %start_or_quit% == s goto quit
+if not %start_or_quit% == S goto quit
+
+:start_assemble
+
+echo *** SETUP ROOT DIRECTORY START ***
+
+REM Determine current path to .bat file
+set current_path=%~dp0
+set current_path=%current_path:~0,-1%
+REM execute "cd" command
+cd /d "%current_path%"
+echo Current_path is: %current_path%
+
+set kit_path=%current_path%\%dev_env_name%
+echo Kit path is: %kit_path%
+
+set resources_folder=1res_%dev_env_name%_%nx_number%
+echo Resources folder is: %resources_folder%
+
+set resources_path=%kit_path%\%resources_folder%
+echo Resources path is: %resources_path%
+
+if not exist "%kit_path%" (
+	mkdir "%kit_path%"
+) else (
+	echo The folder exists already, please, delete it manually
+	echo Process is aborted
+	pause
+	goto quit
+)
+
+mkdir "%resources_path%"
+mkdir "%resources_path%\usertools\bitmaps"
+mkdir "%resources_path%\usertools\startup"
+mkdir "%kit_path%\Cam_Samples"
+mkdir "%kit_path%\Deliverables"
+mkdir "%kit_path%\Documentation from Customer"
+mkdir "%kit_path%\Internal Documentation"
+mkdir "%kit_path%\Issues"
+
+REM Determine where NX is installed
+set rk=hklm\software\Unigraphics Solutions\Installed Applications
+if /i "%PROCESSOR_ARCHITECTURE%"=="AMD64" set rk=hklm\software\wow6432node\Unigraphics Solutions\Installed Applications
+if /i "%PROCESSOR_ARCHITEW6432%"=="AMD64" set rk=hklm\software\wow6432node\Unigraphics Solutions\Installed Applications
+REM echo rk is: %rk%
+REM echo NX_VERSION is: %NX_VERSION%
+for /f "tokens=3,* usebackq" %%h in (`reg query "%rk%" /v "Unigraphics %NX_VERSION%" ^| findstr /i %NX_VERSION%` ) do (set str1=%%~dpi) 
+set UGII_BASE_DIR=%str1:\nxbin\=%
+echo UGII_BASE_DIR is: %UGII_BASE_DIR%
+
+echo *** SETUP ROOT DIRECTORY END ***
+
+echo Start to copy files and folders to the Environment Kit
+echo Press S to start copy files
+echo Press Q to quit
+set /p yes_or_no=
+if %yes_or_no% == s goto start_copy
+if %yes_or_no% == S goto start_copy
+if %yes_or_no% == q goto quit
+if %yes_or_no% == Q goto quit
+if not %start_or_quit% == s goto quit
+if not %start_or_quit% == S goto quit
+:start_copy
+REM copy launcher
+robocopy "%UGII_BASE_DIR%\MACH\resource" "%resources_path%\resource" /e /nfl /ndl
+robocopy "%current_path%\auxiliary materials\.sys_DevEnvKit" "%resources_path%" ugii_env.dat /nfl /ndl
+robocopy "%current_path%\auxiliary materials\.bat Launcher" "%kit_path%" Launch_NX_local.bat /nfl /ndl
+robocopy "%current_path%\auxiliary materials\.bat Delivery Kit Assembler" "%kit_path%" deliverable_kit_assembler.bat /nfl /ndl
+REM rename "%kit_path%\launch*.bat" "Launch_%dev_env_name%_%nx_number%_local.bat"
+
+type "%kit_path%\launch*.bat" >> "%kit_path%\tmp.txt"
+
+setlocal EnableDelayedExpansion
+for /f "usebackq tokens=*" %%a in ("%kit_path%\tmp.txt") do (
+	set "line_check=%%a"
+	set "line_check=!line_check:~0,16!"
+	if "!line_check!" EQU "set NX_NUMBER=NX" (
+		REM echo line_check is: !line_check!
+		set NewStr=set NX_NUMBER=NX!nx_number!
+		echo !NewStr!
+	) else (
+		echo %%a
+	)
+) >> "%kit_path%\tmp1.txt"
+for /f "usebackq tokens=*" %%a in ("%kit_path%\tmp1.txt") do (
+	set "line_check=%%a"
+	set "line_check=!line_check:~0,13!"
+	if "!line_check!" EQU "set ED_NX_LIB" (
+		REM echo line_check is: !line_check!
+		set NewStr=set ED_NX_LIB=%%ED_NX_DIR%%\!resources_folder!
+		echo !NewStr!
+	) else (
+		echo %%a
+	)
+) >> "%kit_path%\tmp2.txt"
+setlocal DisableDelayedExpansion
+
+del "%kit_path%\launch*.bat" "%kit_path%\tmp.txt" "%kit_path%\tmp1.txt"
+rename "%kit_path%\tmp2.txt" "Launch_%dev_env_name%_%nx_number%_local.bat"
+
+echo *** Environment Kit has been created successfully ***
+echo *** Press any key to EXIT ***
+pause
+:quit
+endlocal
+@echo on
+exit

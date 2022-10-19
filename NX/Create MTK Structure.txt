@@ -1,0 +1,161 @@
+@ECHO OFF
+:MTK
+CLS
+ECHO.
+ECHO I.  MTK Tool Kit ID is used:
+ECHO       1. Creation of Folder Structure
+ECHO            cam_setup
+ECHO            cse_driver
+ECHO            documentation
+ECHO            graphics
+ECHO            postprocessor
+ECHO            template_set
+ECHO       2. Post Processor Name (used in configuration file)
+ECHO            null (Test)
+ECHO            PB (Postbuilder)
+ECHO            PC (Post Configurator)
+ECHO            PP (Para Post
+ECHO       3. Configuration file (.dat)
+ECHO.  
+SET /P MTK=Machine Tool Kit ID  : 
+IF "%MTK%"=="" GOTO MTK
+:CTL
+ECHO.
+ECHO II.  MTK Control Type for folder structure:
+ECHO       1.  fanuc\31i_B5
+ECHO       2.  sinumerik\840Dsl_v48
+ECHO.  
+SET /P CTL=MTK Control Type     : 
+IF "%CTL%"=="" GOTO CTL
+:PDES
+ECHO.
+ECHO III.  Short Post Processor Description for use in %MTK%.dat file
+ECHO       1.  GROB G751 with FANUC 30i-B5
+ECHO. 
+SET /P PDS=MTK PP Decription    : 
+IF "%PDS%"=="" GOTO PDS
+:SITE
+ECHO.
+ECHO IV.  Site ID is used for: %MTK%.dat file
+ECHO       1.  In creation of folder structure
+ECHO       2.  Configuration file (.dat)
+ECHO. 
+SET /P SITE=MTK Site ID: 
+
+:E
+ECHO.
+ECHO Press [ENTER] to create MTK Structure
+ECHO.
+set MTK_DIR=%CD%\%SITE%\%MTK%
+set MTK_cam=%MTK_DIR%\cam_setup
+set MTK_cse=%MTK_DIR%\cse_driver
+set MTK_doc=%MTK_DIR%\documentation
+set MTK_gra=%MTK_DIR%\graphics
+set MTK_ppr=%MTK_DIR%\postprocessor
+set MTK_tem=%MTK_DIR%\template_set
+set DAT_FILE=%MTK_DIR%\%MTK%.dat
+
+set MTK_DIR
+set DAT_FILE
+set MTK_cam
+set MTK_cse
+set MTK_doc
+set MTK_gra
+set MTK_ppr
+set MTK_tem
+
+ECHO.
+ECHO Close application and restart if data is incorrect
+@pause
+
+if not exist "%MTK_DIR%*"                           md "%MTK_DIR%"
+
+set message=Used to Keep GitHub Folder Structure
+
+if not exist "%MTK_cam%*" (
+  md "%MTK_cam%"
+  echo %Message% >"%MTK_cam%\.keep"
+)
+
+if not exist "%MTK_cse%\%CTL%*" (
+  md "%MTK_cse%\%CTL%"
+  echo %Message% >"%MTK_cse%\%CTL%\.keep"
+)
+
+if not exist "%MTK_doc%*" (
+  md "%MTK_doc%"
+  echo %Message% >"%MTK_doc%\.keep"
+)
+
+if not exist "%MTK_gra%*" (
+  md "%MTK_gra%"
+  echo %Message% >"%MTK_gra%\.keep"
+)
+
+if not exist "%MTK_ppr%*"                           md "%MTK_ppr%"
+
+if not exist "%MTK_ppr%\%CTL%\PB*" ( 
+  md "%MTK_ppr%\%CTL%\PB"
+  echo %Message% >"%MTK_ppr%\%CTL%\PB\.keep"
+)
+
+if not exist "%MTK_ppr%\%CTL%\PC*" ( 
+  md "%MTK_ppr%\%CTL%\PC"
+  echo %Message% >"%MTK_ppr%\%CTL%\PC\.keep"
+)
+
+if not exist "%MTK_ppr%\%CTL%\PP*" ( 
+  md "%MTK_ppr%\%CTL%\PP"
+  echo %Message% >"%MTK_ppr%\%CTL%\PP\.keep"
+)
+
+if not exist "%MTK_tem%*" (
+  md "%MTK_tem%"
+  echo %Message% >"%MTK_tem%\.keep"
+)
+
+if exist "%DAT_FILE%" ( DEL /Q "%DAT_FILE%" )
+
+if not exist "%DAT_FILE%" (
+  echo null       ,${UGCAM_ROOT_DIR}MTK\%SITE%\%MTK%\postprocessor\%CTL%\null.tcl    ,${UGCAM_ROOT_DIR}MTK\%SITE%\%MTK%\postprocessor\%CTL%\null.def>"%DAT_FILE%"
+  echo #%PDS% - PB,${UGCAM_ROOT_DIR}MTK\%SITE%\%MTK%\postprocessor\%CTL%\PB\%MTK%.tcl,${UGCAM_ROOT_DIR}MTK\%SITE%\%MTK%\postprocessor\%CTL%\PB\%MTK%.def>>"%DAT_FILE%"
+  echo #%PDS% - PC,${UGCAM_ROOT_DIR}MTK\%SITE%\%MTK%\postprocessor\%CTL%\PC\%MTK%.tcl,${UGCAM_ROOT_DIR}MTK\%SITE%\%MTK%\postprocessor\%CTL%\PC\%MTK%.def>>"%DAT_FILE%"
+  echo #%PDS% - PP,${UGCAM_ROOT_DIR}MTK\%SITE%\%MTK%\postprocessor\%CTL%\PP\%MTK%.tcl,${UGCAM_ROOT_DIR}MTK\%SITE%\%MTK%\postprocessor\%CTL%\PP\%MTK%.def>>"%DAT_FILE%"
+  echo #CSE_FILES ,${UGCAM_ROOT_DIR}MTK\%SITE%\%MTK%\cse_driver\%CTL%\%MTK%.mcf>>"%DAT_FILE%"
+
+  echo #  >>"%DAT_FILE%"
+  echo # null = load default UDE's for PP>>"%DAT_FILE%"
+  echo #   PB = Postbuilder       >>"%DAT_FILE%"
+  echo #   PC = Post Configurator >>"%DAT_FILE%"
+  echo #   PP = PARA-POST         >>"%DAT_FILE%"
+)
+
+set null_tcl=%MTK_ppr%\%CTL%\null.tcl
+set null_def=%MTK_ppr%\%CTL%\null.def
+
+if not exist "%null_tcl%" (
+  echo # null post>"%null_tcl%"
+)
+
+if not exist "%null_def%" (
+  echo MACHINE NULL>"%null_def%"
+)
+
+if exist "%DAT_FILE%" ( 
+	COPY /B /V "%DAT_FILE%" "%CD%\%MTK%.dat"
+)
+
+ECHO.
+ECHO.
+ECHO Copy %MTK%.dat to \ugcam\UGPostprocessors\configuration 
+ECHO.
+ECHO.
+@pause
+ECHO.
+ECHO. 
+ECHO EXITING
+ECHO. 
+ECHO.
+ping 127.0.0.1 -n 5 > nul 
+
+
