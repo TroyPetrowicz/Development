@@ -36,6 +36,7 @@ echo 5 - 1899
 echo 6 - 1926
 echo 7 - 1953
 echo 8 - 1980
+echo 8 - 2007
 echo --------------
 set /p nx_input=
 
@@ -78,6 +79,11 @@ if %nx_input% == 7 (
 if %nx_input% == 8 (
 	set NX_VERSION=V1980
 	set nx_number=1980
+	goto start_1
+)
+if %nx_input% == 9 (
+	set NX_VERSION=V2007
+	set nx_number=2007
 	goto start_1
 )
 echo Input "%nx_input%" is incorrect, please, try again
