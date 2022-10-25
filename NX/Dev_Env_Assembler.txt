@@ -36,7 +36,7 @@ echo 5 - 1899
 echo 6 - 1926
 echo 7 - 1953
 echo 8 - 1980
-echo 8 - 2007
+echo 9 - 2007
 echo --------------
 set /p nx_input=
 
@@ -118,7 +118,7 @@ echo Current_path is: %current_path%
 set kit_path=%current_path%\%dev_env_name%
 echo Kit path is: %kit_path%
 
-set resources_folder=1res_%dev_env_name%_%nx_number%
+set resources_folder=%dev_env_name%
 echo Resources folder is: %resources_folder%
 
 set resources_path=%kit_path%\%resources_folder%
@@ -167,9 +167,9 @@ if not %start_or_quit% == S goto quit
 :start_copy
 REM copy launcher
 robocopy "%UGII_BASE_DIR%\MACH\resource" "%resources_path%\resource" /e /nfl /ndl
-robocopy "%current_path%\auxiliary materials\.sys_DevEnvKit" "%resources_path%" ugii_env.dat /nfl /ndl
-robocopy "%current_path%\auxiliary materials\.bat Launcher" "%kit_path%" Launch_NX_local.bat /nfl /ndl
-robocopy "%current_path%\auxiliary materials\.bat Delivery Kit Assembler" "%kit_path%" deliverable_kit_assembler.bat /nfl /ndl
+REM robocopy "%current_path%\auxiliary materials\.sys_DevEnvKit" "%resources_path%" ugii_env.dat /nfl /ndl
+REM robocopy "%current_path%\auxiliary materials\.bat Launcher" "%kit_path%" Launch_NX_local.bat /nfl /ndl
+REM robocopy "%current_path%\auxiliary materials\.bat Delivery Kit Assembler" "%kit_path%" deliverable_kit_assembler.bat /nfl /ndl
 REM rename "%kit_path%\launch*.bat" "Launch_%dev_env_name%_%nx_number%_local.bat"
 
 type "%kit_path%\launch*.bat" >> "%kit_path%\tmp.txt"
@@ -201,6 +201,11 @@ setlocal DisableDelayedExpansion
 
 del "%kit_path%\launch*.bat" "%kit_path%\tmp.txt" "%kit_path%\tmp1.txt"
 rename "%kit_path%\tmp2.txt" "Launch_%dev_env_name%_%nx_number%_local.bat"
+rmdir /s /q %resources_path%\resource\debug %resources_path%\resource\feature %resources_path%\resource\machining_knowledge
+rmdir /s /q %resources_path%\resource\owi %resources_path%\resource\post_configurator %resources_path%\resource\postprocessor
+rmdir /s /q %resources_path%\resource\robots %resources_path%\resource\shop_doc %resources_path%\resource\spreadsheet
+rmdir /s /q %resources_path%\resource\wizard %resources_path%\resource\ug_library %resources_path%\resource\tool_path
+rmdir /s /q %resources_path%\resource\template_dir
 
 echo *** Environment Kit has been created successfully ***
 echo *** Press any key to EXIT ***
