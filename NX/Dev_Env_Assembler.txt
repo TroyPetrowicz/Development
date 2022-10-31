@@ -1,10 +1,4 @@
 REM
-REM CHANGELOG
-REM 2020/08/05|gkuchyt|Add NX 1926
-REM 2020/08/06|ebondarev| Change lline: PLEASE, EXIT THE DROPBOX DESKTOP APPLICATION
-REM 2020/08/05|gkuchyt|Add NX 1953
-REM 2021/06/17|ebondarev|Change to ".sys_DevEnvKit"
-REM 2021/06/23|ebondarev|Add NX 1980
 REM
 
 @echo off
@@ -20,7 +14,7 @@ echo    XX   XX   XX      XX   XX     XXXXXXXX   XX   XX  XX      XX   XX      X
 echo   XXX    XX  XXXXXX  XXXXXX     XXX     XX  XXXXXXX  XXXXXX  XX    XX     XXX
 echo *                                                                                *
 echo **********************************************************************************
-echo ***!!! PLEASE, EXIT THE DROPBOX DESKTOP APPLICATION !!!***
+echo ***!!! PLEASE, EXIT THE DROPBOX DESKTOP APPLICATION IF IN USE !!!***
 echo It is strongly recommended don't use exclamation sign "!" in the names
 
 echo Please, enter NX version
