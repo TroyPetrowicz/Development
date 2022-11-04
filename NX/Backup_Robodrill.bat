@@ -55,5 +55,5 @@ rem robocopy C:\Users\503262108\Documents\GitHub\NC-Toolkit\ugcam\UGPostprocesso
 :: Sync ::
 ::-------------------------------------------------------------------------
 robocopy %Src% %Dest% %What% %Log%
-robocopy %Src% C:\Users\503262108\Documents\Test_Programs\WCRM110_077 %What%
+REM robocopy %Src% C:\Users\503262108\Documents\Test_Programs\WCRM110_077 %What%
 echo off
