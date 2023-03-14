@@ -1,0 +1,42 @@
+######  DATA LINES BELOW  ######
+
+
+# machine_database.dat -->  ...\MACH\resource\library\machine\ascii\
+DATA|Mach_Name|Mach_Type|Mach_Descr|Mach_Ctrl|Mach_Manuf|${UGII_CAM_LIBRARY_INSTALLED_MACHINES_DIR}Mach_Name/Mach_Name.dat|1.000000|${UGII_CAM_LIBRARY_INSTALLED_MACHINES_DIR}Mach_Name/graphics/Mach_Name
+
+
+
+
+# device_database.dat -->  ...\MACH\resource\library\device\ascii\
+
+
+
+
+# template_post.dat -->  ...\MACH\resource\postprocessor\
+Mach_Name,${UGII_CAM_LIBRARY_INSTALLED_MACHINES_DIR}Mach_Name\postprocessor\Mach_Name.tcl,${UGII_CAM_LIBRARY_INSTALLED_MACHINES_DIR}Mach_Name\postprocessor\Mach_Name.def
+
+
+
+# ude.cdl -->  ...\MACH\resource\user_def_event\
+(paste the following under MACHINE FANUC)
+INCLUDE { $UGII_CAM_LIBRARY_INSTALLED_MACHINES_DIR/Mach_Name/postprocessor/Mach_Name.cdl }
+
+
+
+# ugs_*manufacturing*_templates.pax:
+
+  
+    <PaletteEntry id="d1">
+        <References/>
+        <Presentation name="Mach_Name" description="Mach_Name NX CAM Template">
+            <PreviewImage type="UGPart" location="${UGII_CAM_LIBRARY_INSTALLED_MACHINES_DIR}Mach_Name\Mach_Name_Setup.jpg"/>
+        </Presentation>
+        <ObjectData class="CamTemplate">
+            <Filename>${UGII_CAM_LIBRARY_INSTALLED_MACHINES_DIR}Mach_Name_Setup.prt</Filename>
+            <Configuration>${UGII_CAM_CONFIG_DIR}cam_library.dat</Configuration>
+            <LibraryClassPath>GENERAL</LibraryClassPath>
+            <Units>English</Units>
+            <UsesMasterModel>Yes</UsesMasterModel>
+        </ObjectData>
+    </PaletteEntry> 
+

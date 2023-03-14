@@ -1,0 +1,2 @@
+Mach_Name,{$UGII_CAM_LIBRARY_INSTALLED_MACHINES_DIR}Mach_Name\postprocessor\Mach_Name.tcl,{$UGII_CAM_LIBRARY_INSTALLED_MACHINES_DIR}Mach_Name\postprocessor\Mach_Name.def
+CSE_FILES, {$UGII_CAM_LIBRARY_INSTALLED_MACHINES_DIR}Mach_Name\cse_driver\Mach_Name.MCF

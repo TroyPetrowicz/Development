@@ -1,0 +1,96 @@
+# Define the transformation matrix
+set matrix {{1 0 0} {0 1 0} {0 0 1}}
+
+# Define the translation vector
+set translation {10 20 30}
+
+# Define the rotation matrix for each axis
+set x_rotation {{1 0 0} {0 [expr cos(45)] [expr -sin(45)]} {0 [expr sin(45)] [expr cos(45)]}}
+set y_rotation {{[expr cos(45)] 0 [expr sin(45)]} {0 1 0} {[expr -sin(45)] 0 [expr cos(45)]}}
+set z_rotation {{[expr cos(45)] [expr -sin(45)] 0} {[expr sin(45)] [expr cos(45)] 0} {0 0 1}}
+
+# Perform the transformation
+set matrix [matrix_mult $matrix $x_rotation]
+set matrix [matrix_mult $matrix $y_rotation]
+set matrix [matrix_mult $matrix $z_rotation]
+set matrix [matrix_translate $matrix $translation]
+
+# Print the final transformation matrix
+puts $matrix
+
+proc matrix_mult {matA matB} {
+    # Create an empty matrix to store the result
+    set result {{0 0 0} {0 0 0} {0 0 0}}
+
+    # Perform matrix multiplication
+    for {set i 0} {$i < 3} {incr i} {
+        for {set j 0} {$j < 3} {incr j} {
+            set sum 0
+            for {set k 0} {$k < 3} {incr k} {
+                set a [lindex $matA $i $k]
+                set b [lindex $matB $k $j]
+                set sum [expr {$sum + $a * $b}]
+            }
+            lset result $i $j $sum
+        }
+    }
+
+    return $result
+}
+
+proc matrix_translate {matrix translation} {
+    # Perform matrix translation
+    for {set i 0} {$i < 3} {incr i} {
+        set x [lindex $matrix $i 0]
+        set y [lindex $matrix $i 1]
+        set z [lindex $matrix $i 2]
+        set x_t [lindex $translation 0]
+        set y_t [lindex $translation 1]
+        set z_t [lindex $translation 2]
+        lset matrix $i 0 [expr {$x + $x_t}]
+        lset matrix $i 1 [expr {$y + $y_t}]
+        lset matrix $i 2 [expr {$z + $z_t}]
+    }
+
+    return $matrix
+}
+
+proc inverse_kinematics {wpx wpy wpz wpx_t wpy_t wpz_t} {
+    # Define the position and orientation of the tool in the workpiece coordinate system
+    set wpx $wpx
+    set wpy $wpy
+    set wpz $wpz
+    set wpx_t $wpx_t
+    set wpy_t $wpy_t
+    set wpz_t $wpz_t
+
+    # Define the position and orientation of the tool in the machine coordinate system
+    set mpx 0
+    set mpy 0
+    set mpz 0
+    set mpx_t 0
+    set mpy_t 0
+    set mpz_t 0
+
+    # Define the position and orientation of the right angle head attachment in the machine coordinate system
+    set rah_x 0
+    set rah_y 0
+    set rah_z 0
+    set rah_rx 0
+    set rah_ry 0
+    set rah_rz 0
+
+    # Calculate the position and orientation of the tool in the machine coordinate system
+    set mpx [expr {$wpx + $rah_x}]
+    set mpy [expr {$wpy + $rah_y}]
+    set mpz [expr {$wpz + $rah_z}]
+    set mpx_t [expr {$wpx_t + $rah_rx}]
+    set mpy_t [expr {$wpy_t + $rah_ry}]
+    set mpz_t [expr {$wpz_t + $rah_rz}]
+
+    # Return the position and orientation of the tool in the machine coordinate system
+    return [list $mpx $mpy $mpz $mpx_t $mpy_t $mpz_t]
+}
+
+
+
